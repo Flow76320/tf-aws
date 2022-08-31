@@ -1,10 +1,15 @@
+module "vpc" {
+  source = "./modules/vpc"
+
+  vpc_cidr_block = var.eks_cidr_block
+}
+
 module "eks" {
   source = "./modules/eks"
 
-  # region       = "eu-frankfurt-1"
-  # tenancy_ocid = var.tenancy_ocid
-  # user_ocid    = var.user_ocid
-  # fingerprint  = var.fingerprint
+  # Network config
+  eks_vpc_id     = module.vpc.vpc_id
+  eks_cidr_block = var.eks_cidr_block
 }
 
 # module "helm" {

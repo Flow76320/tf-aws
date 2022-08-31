@@ -1,4 +1,3 @@
-# TODO uncomment
 # terraform {
 #   backend "remote" {
 #     organization = "fganee"
