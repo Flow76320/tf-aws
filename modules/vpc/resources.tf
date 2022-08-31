@@ -7,3 +7,18 @@ resource "aws_vpc" "vpc" {
 
   tags = local.tags
 }
+
+resource "aws_internet_gateway" "vpc_internet_gateway" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = local.tags
+}
+
+resource "aws_route_table" "vpc_default_route_table" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.vpc_internet_gateway.id
+  }
+}

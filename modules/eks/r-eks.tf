@@ -1,5 +1,5 @@
-# Create IAM role to allow IAM user to manager AWS API
-resource "aws_iam_role" "eks_iam_role" {
+# Create IAM role to allow IAM user to manage EKS API
+resource "aws_iam_role" "eks_iam_role_cluster" {
   name = "eks-cluster-manager"
 
   assume_role_policy = jsonencode({
@@ -19,15 +19,17 @@ resource "aws_iam_role" "eks_iam_role" {
 }
 
 # Attach EKS defined policy to the previous role
-resource "aws_iam_role_policy_attachment" "eks_iam_role_policy_attachment" {
-  role       = aws_iam_role.eks_iam_role.name
-  policy_arn = data.aws_iam_policy.eks_iam_policy.arn
+resource "aws_iam_role_policy_attachment" "eks_iam_role_policy_attachments_cluster" {
+  for_each = data.aws_iam_policy.eks_iam_policy_cluster
+
+  role       = aws_iam_role.eks_iam_role_cluster.name
+  policy_arn = each.value.arn
 }
 
 # Create AKS cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name     = local.cluster_name
-  role_arn = aws_iam_role.eks_iam_role.arn
+  role_arn = aws_iam_role.eks_iam_role_cluster.arn
 
   vpc_config {
     subnet_ids              = [aws_subnet.eks_subnet_primary.id, aws_subnet.eks_subnet_secondary.id]
@@ -38,6 +40,6 @@ resource "aws_eks_cluster" "eks_cluster" {
   tags = local.tags
 
   depends_on = [
-    aws_iam_role_policy_attachment.eks_iam_role_policy_attachment,
+    aws_iam_role_policy_attachment.eks_iam_role_policy_attachments_cluster
   ]
 }

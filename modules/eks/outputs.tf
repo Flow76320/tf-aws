@@ -26,8 +26,3 @@ output "cluster_endpoint" {
 output "eks_kubeconfig_certificate_authority_data" {
   value = aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
-
-# output "cluster_security_group_id" {
-#   description = "Security group ids attached to the cluster control plane"
-#   # value       = .cluster_security_group_id # TODO update
-# }

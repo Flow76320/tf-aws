@@ -1,0 +1,9 @@
+---
+image:
+  tag: v1.5.0	
+
+ingress:
+  ingressClassName: ${ingress_class_name}  
+
+auth:
+  existingSecret: module
