@@ -41,7 +41,7 @@ No resources.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_eks_cidr_block"></a> [eks\_cidr\_block](#input\_eks\_cidr\_block) | EKS network in CIDR notation | `string` | `"10.0.1.0/24"` | no |
-| <a name="input_region"></a> [region](#input\_region) | Global vars | `any` | n/a | yes |
+| <a name="input_region"></a> [region](#input\_region) | AWS region | `string` | `"eu-west-3"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of tags to set to resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_cidr_block"></a> [vpc\_cidr\_block](#input\_vpc\_cidr\_block) | VPC network in CIDR notation | `string` | `"10.0.0.0/16"` | no |
 ## Outputs
