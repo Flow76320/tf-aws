@@ -1,5 +1,5 @@
 locals {
   pypi_values = {
-    ingress_class_name = kubernetes_ingress_class.eks_alb.metadata[0].name
+    basic_auth_secret_name = kubernetes_secret.pypi_auth.metadata[0].name
   }
 }

@@ -1,18 +1,9 @@
 # Create requirements of Helm charts
 ## Pypi server
-### External access
-resource "kubernetes_ingress_class" "eks_alb" {
+### Namespace
+resource "kubernetes_namespace" "pypi_server_namespace" {
   metadata {
-    name = "eks-alb"
-  }
-
-  spec {
-    controller = "ingress.k8s.aws/alb"
-    # parameters {
-    #   apiGroup = elbv2.k8s.aws
-    #   kind     = IngressClassParams
-    #   name     = eks_alb_cfg
-    # }
+    name = var.pypi_server_namespace
   }
 }
 
@@ -25,7 +16,8 @@ resource "random_password" "pypi_password" {
 
 resource "kubernetes_secret" "pypi_auth" {
   metadata {
-    name = "pypi-auth"
+    name      = "pypi-auth"
+    namespace = kubernetes_namespace.pypi_server_namespace.metadata[0].name
   }
 
   data = {

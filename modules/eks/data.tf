@@ -29,3 +29,13 @@ data "aws_iam_policy" "eks_iam_policy_workers" {
   ])
   name = each.key
 }
+
+# Download ALB controller policy file
+data "http" "aws_lb_controller_policy" {
+  # url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.3/docs/install/iam_policy.json" # Need IAM for ServiceAccount
+  url = "https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/main/docs/install/iam_policy.json" # Do not need IAM for ServiceAccount
+
+  request_headers = {
+    Accept = "application/json"
+  }
+}

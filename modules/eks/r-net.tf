@@ -6,7 +6,13 @@ resource "aws_subnet" "eks_subnet_primary" {
 
   map_public_ip_on_launch = true # TODO This assigns public IP for all nodes. Can be improved
 
-  tags = local.tags
+  tags = merge(
+    {
+      "kubernetes.io/role/elb"                      = 1
+      "kubernetes.io/role/internal-elb"             = 1
+      "kubernetes.io/cluster/${local.cluster_name}" = "owned"
+    }
+  , local.tags)
 }
 
 resource "aws_subnet" "eks_subnet_secondary" {
@@ -16,7 +22,13 @@ resource "aws_subnet" "eks_subnet_secondary" {
 
   map_public_ip_on_launch = true # TODO This assigns public IP for all nodes. Can be improved
 
-  tags = local.tags
+  tags = merge(
+    {
+      "kubernetes.io/role/elb"                      = 1
+      "kubernetes.io/role/internal-elb"             = 1
+      "kubernetes.io/cluster/${local.cluster_name}" = "owned"
+    }
+  , local.tags)
 }
 
 resource "aws_route_table_association" "vpc_default_route_table_association_primary" {
