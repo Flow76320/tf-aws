@@ -6,13 +6,11 @@ ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/target-type: 'ip'
   hosts:
     - server.test.test
   path: /pypiserver
   pathType: ImplementationSpecific
-
-service:
-  nodePort: 8080 # Required so that ALB creates a target group
 
 auth:
   existingSecret: ${basic_auth_secret_name}
