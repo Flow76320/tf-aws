@@ -31,15 +31,83 @@ MLHub
 Default login informations are provided [here](https://github.com/ml-tooling/ml-hub#configuration). First, register `admin` user with a password if not configured; then login with the previous credentials.
 
 ## How to use Pypi server
+### Build the Python package
+A simple Python package is present into `python` folder to demonstrate how to push/pull to/from the Pypi server.
+To build the package, run:
+```
+cd python
+python3 -m pip install --upgrade build
+python3 -m build
+```
+The output must end with `Successfully built addition-0.0.1.tar.gz and addition-0.0.1-py3-none-any.whl`.
+
 ### Push
-`pip install --index-url http://pypiserver.test.test/simple/ PACKAGE [PACKAGE2...]`
+In order to push the package to the Pypi server, run:
+#### Install Twine utility
+
+We'll use twine to upload the Python package: `python3 -m pip install --upgrade twine`.
+Then, configure it with the credentials:
+```
+cat <<EOF >> ~/.pypirc
+[distutils]
+index-servers =
+    pypiserver
+
+[pypiserver]
+repository = http://pypiserver.${configured_domain}
+username = ${pypi_username_from_terraform}
+password = ${pypi_password_from_terraform}
+EOF
+```
+
+Finally, upload the package: `python3 -m twine upload --repository pypiserver dist/* --verbose`.
+The output must look like:
+```
+INFO     Using configuration from ~/.pypirc                                                                                                                                                                                  
+Uploading distributions to http://pypiserver.test.test
+INFO     dist/addition-0.0.1-py3-none-any.whl (2.9 KB)                                                                                                                                                                                  
+INFO     dist/addition-0.0.1.tar.gz (2.0 KB)                                                                                                                                                                                            
+INFO     username set from config file                                                                                                                                                                                                  
+INFO     password set from config file                                                                                                                                                                                                  
+INFO     username: pypi                                                                                                                                                                                                                 
+INFO     password: <hidden>                                                                                                                                                                                                             
+Uploading addition-0.0.1-py3-none-any.whl
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 kB • 00:00 • ?
+INFO     Response from http://pypiserver.test.test/:                                                                                                                                                                                    
+         200 OK                                                                                                                                                                                                                         
+Uploading addition-0.0.1.tar.gz
+100% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 kB • 00:00 • ?
+INFO     Response from http://pypiserver.test.test/:                                                                                                                                                                                    
+         200 OK   
+```
+
+You can check that the package has successfully been uploaded with `
 
 ### Pull
+From local computer:
+`python3 -m pip install --extra-index-url http://pypiserver.test.test/simple/ --trusted-host pypiserver.test.test addition==0.0.1`
+
 From Jupyter:
-http://pypi-pypiserver.pypi.svc:8080/simple/ hello_world
+* On a new Python3 file
+* In the first cell, run
+```
+import sys
+!{sys.executable} -m pip install --extra-index-url http://pypi-pypiserver.pypi.svc:8080/simple/ --trusted-host pypi-pypiserver.pypi.svc addition==0.0.1
+```
+* In a second cell, check your number has been incremented !
+```
+from addition import addition
+addition.add_one(9)
+```
 
 ## Improvements
-http://pypi-pypiserver.pypi.svc/ --> URL with ingress
+Here is a list of possible improvements:
+
+* http://pypi-pypiserver.pypi.svc/ --> URL with ingress
+* Add cert-manager with public DNS zone to allow certificate generation
+* Improve DNS resolution into EKS cluster, between pods
+* Add CI to check Terraform format and validate modules
+* Add CI to do the testings (package build, push and pull)
 
 ## Disclaimer
 EKS installation is based on [AWS provider example](https://github.com/hashicorp/terraform-provider-aws/blob/main/examples/eks-getting-started)
@@ -60,6 +128,7 @@ Following documentation is generated with [terraform-docs](https://terraform-doc
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.28 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.6.0 |
+| <a name="requirement_htpasswd"></a> [htpasswd](#requirement\_htpasswd) | 1.0.3 |
 | <a name="requirement_http"></a> [http](#requirement\_http) | ~> 3.1 |
 ## Providers
 
@@ -85,7 +154,10 @@ No resources.
 | <a name="input_vpc_cidr_block"></a> [vpc\_cidr\_block](#input\_vpc\_cidr\_block) | VPC network in CIDR notation | `string` | `"10.0.0.0/16"` | no |
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_pypi_server_password"></a> [pypi\_server\_password](#output\_pypi\_server\_password) | Pypi server password |
+| <a name="output_pypi_server_username"></a> [pypi\_server\_username](#output\_pypi\_server\_username) | Pypi server username |
 
 
 # States backend

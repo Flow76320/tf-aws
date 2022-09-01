@@ -11,7 +11,16 @@ resource "kubernetes_namespace" "pypi_server_namespace" {
 resource "random_password" "pypi_password" {
   length           = 20
   special          = true
-  override_special = "_@"
+  override_special = "_%@"
+}
+
+resource "random_password" "salt" {
+  length = 8
+}
+
+resource "htpasswd_password" "hash_pypi_password" {
+  password = random_password.pypi_password.result
+  salt     = random_password.salt.result
 }
 
 resource "kubernetes_secret" "pypi_auth" {
@@ -21,9 +30,7 @@ resource "kubernetes_secret" "pypi_auth" {
   }
 
   data = {
-    ".htpasswd" : jsonencode(
-      "${var.pypi_username}:${random_password.pypi_password.result}"
-    )
+    ".htpasswd" = "${var.pypi_username}:${htpasswd_password.hash_pypi_password.apr1}"
   }
 
   type = "Opaque"

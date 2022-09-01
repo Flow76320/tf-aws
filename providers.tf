@@ -13,6 +13,10 @@ terraform {
       source  = "hashicorp/helm"
       version = "2.6.0"
     }
+    htpasswd = {
+      source  = "loafoe/htpasswd"
+      version = "1.0.3"
+    }
   }
 
   required_version = "~> 1.1"
