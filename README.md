@@ -4,6 +4,8 @@
 
 * AWS CLI (https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 * AWS credentials (https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html)
+* Helm installed ()
+* Unzip package
 
 ## Credentials creation
 Example using IAM account
@@ -20,8 +22,30 @@ Useful links:
 `aws eks get-token`
 Connect to EKS cluster `aws eks update-kubeconfig --region region-code --name cluster-name --kubeconfig kubeconfig_path`
 
+## Charts installed
+Pypi Server
+MLHub
+
+
+## Login to ML
+Default login informations are provided [here](https://github.com/ml-tooling/ml-hub#configuration). First, register `admin` user with a password if not configured; then login with the previous credentials.
+
+## How to use Pypi server
+### Push
+`pip install --index-url http://pypiserver.test.test/simple/ PACKAGE [PACKAGE2...]`
+
+### Pull
+From Jupyter:
+http://pypi-pypiserver.pypi.svc:8080/simple/ hello_world
+
+## Improvements
+http://pypi-pypiserver.pypi.svc/ --> URL with ingress
+
 ## Disclaimer
 EKS installation is based on [AWS provider example](https://github.com/hashicorp/terraform-provider-aws/blob/main/examples/eks-getting-started)
+For the demonstration, Pypiserver is exposed behind an ALB with DNS entries registered into Route53 DNS zone. MLhub keeps it default configuration with a Service of type "LoadBalancer" to be reached
+HTTPS has not been configured for the public endpoints We could have used cert-manager with a public DNS zone to do Let's Encrypt DNS challenge.
+Permanent drift on `terraform plan` because of MLHub master branch ZIP download.
 
 
 <!-- BEGIN_TF_DOCS -->

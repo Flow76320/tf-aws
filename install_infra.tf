@@ -22,4 +22,8 @@ module "eks" {
 # Install Helm releases workload to EKS cluster
 module "helm" {
   source = "./modules/helm"
+
+  depends_on = [
+    module.eks
+  ]
 }

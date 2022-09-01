@@ -1,7 +1,6 @@
-# Useful Helm releases services
+## Load balancer controller
 ## Installation link https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
-
-# Policies
+### Policies
 resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
   name        = "AWSLoadBalancerControllerIAMPolicy"
   policy      = tostring(data.http.aws_lb_controller_policy.body)
@@ -13,7 +12,7 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_policy_a
   policy_arn = aws_iam_policy.aws_load_balancer_controller_policy.arn
 }
 
-# Add-on installation
+### Add-on installation
 resource "helm_release" "aws_lb" {
   name       = "aws-alb"
   repository = "https://aws.github.io/eks-charts"
