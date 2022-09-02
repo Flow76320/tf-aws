@@ -37,4 +37,9 @@ resource "helm_release" "aws_lb" {
   #   value = "aws-load-balancer-controller " 
   # }
 
+  depends_on = [
+    aws_eks_cluster.eks_cluster,
+    aws_eks_node_group.eks_nodes
+  ]
+
 }

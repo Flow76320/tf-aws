@@ -10,7 +10,8 @@ module "eks" {
   source = "./modules/eks"
 
   # Global config
-  region = var.region
+  region        = var.region
+  dns_zone_name = var.dns_zone_name
 
   # Network config
   eks_vpc_id                 = module.vpc.vpc_id
@@ -22,6 +23,9 @@ module "eks" {
 # Install Helm releases workload to EKS cluster
 module "helm" {
   source = "./modules/helm"
+
+  dns_domain = var.dns_zone_name
+  # No additional parametrization is done. We could expose variables to update Helm Charts values/versions for example.
 
   depends_on = [
     module.eks

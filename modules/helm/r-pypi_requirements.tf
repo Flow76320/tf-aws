@@ -1,5 +1,4 @@
-# Create requirements of Helm charts
-## Pypi server
+# Create requirements of Pypi server Helm chart
 ### Namespace
 resource "kubernetes_namespace" "pypi_server_namespace" {
   metadata {
@@ -7,7 +6,7 @@ resource "kubernetes_namespace" "pypi_server_namespace" {
   }
 }
 
-### Authentication
+### Authentication credentials
 resource "random_password" "pypi_password" {
   length           = 20
   special          = true

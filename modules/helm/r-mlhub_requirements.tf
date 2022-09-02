@@ -1,5 +1,4 @@
-# Create requirements of Helm charts
-## MLHub server
+# Create requirements of MLHub Helm chart
 ### Namespace
 resource "kubernetes_namespace" "mlhub_namespace" {
   metadata {
@@ -7,6 +6,8 @@ resource "kubernetes_namespace" "mlhub_namespace" {
   }
 }
 
+# Project doc indicated that we need to package the Chart by ourselves. As there are fixes but no new release, let's set Chart $VERSION to 1.1.0
+## Download the project
 resource "null_resource" "download_archive" {
   provisioner "local-exec" {
     working_dir = path.module
@@ -17,11 +18,11 @@ resource "null_resource" "download_archive" {
   }
 
   triggers = {
-    always = timestamp()
+    always = timestamp() # Implies permanent drift
   }
 }
 
-# Project doc indicated that we need to package the Chart by ourselves. As there are fixes but no new release, let's set Chart $VERSION to 1.1.0
+## Build Helm Chart
 resource "null_resource" "mlhub_package_helm" {
   provisioner "local-exec" {
     working_dir = path.module

@@ -93,4 +93,8 @@ resource "helm_release" "aws_external_dns" {
     name  = "interval"
     value = "3m"
   }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.aws_external_dns_controller_policy_attachment_workers
+  ]
 }
