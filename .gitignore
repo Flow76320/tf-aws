@@ -1,3 +1,12 @@
 .terraform
 .terraform.lock.hcl
+.tfstate
+*.backup
 .aws
+.tgz
+**.zip
+.tar.gz
+.whl
+python/dist/
+python/src/addition.egg-info/*
+modules/helm/ml-hub-master/*

@@ -1,0 +1,16 @@
+---
+image:
+  tag: v1.5.0	
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/target-type: 'ip'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+  hosts:
+    - pypiserver.${dns_domain}
+  path: /
+
+auth:
+  existingSecret: ${basic_auth_secret_name}
